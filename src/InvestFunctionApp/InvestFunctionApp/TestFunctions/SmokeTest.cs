@@ -3,7 +3,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Table;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
@@ -15,7 +14,6 @@ namespace InvestFunctionApp.TestFunctions
         [FunctionName("SmokeTest")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = Testing.TestFunctionRoute + "/smoketest")] HttpRequest req,
-            [Table("SmokeTest", InvestorType.Individual)] CloudTable smokeTestTable,
             ILogger log)
         {            
             log.LogInformation("C# HTTP trigger function processed a request.");
