@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Threading.Tasks;
-using System;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -13,8 +12,6 @@ namespace InvestFunctionApp.TestFunctions
 {
     public static class SmokeTest
     {
-        private class SmokeTestEntity : TableEntity { }
-
         [FunctionName("SmokeTest")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = Testing.TestFunctionRoute + "/smoketest")] HttpRequest req,
