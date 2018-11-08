@@ -40,7 +40,7 @@ namespace InvestFunctionApp.EndToEndTests
             await InvokeAddToPortfolioFunction(startingInvestorDetails.RowKey, amountToInvest);
 
             // Wait for a while
-            await Task.Delay(TimeSpan.FromMinutes(1));
+            await Task.Delay(TimeSpan.FromMinutes(2));
 
             var resultingInvestor = await GetInvestor(startingInvestorDetails.RowKey);
 
