@@ -1,14 +1,36 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 pool:
   vmImage: 'Ubuntu 16.04'
-
-variables:
-  buildConfiguration: 'Release'
-
+  
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+
+- script: dotnet build 'src/InvestFunctionApp/InvestFunctionApp.sln' --configuration $(buildConfiguration)
+  displayName: 'Build solution'
+    
+- script: dotnet test 'src/InvestFunctionApp/InvestFunctionApp.Tests' --configuration $(buildConfiguration) --logger trx
+  displayName: 'Run unit tests'
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
+
+- script: dotnet publish 'src/InvestFunctionApp/InvestFunctionApp/InvestFunctionApp.csproj' --configuration $(buildConfiguration) --output '$(Build.ArtifactStagingDirectory)/app'
+  displayName: 'Package function app'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publishing app artifact'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/app'
+    artifactName: app
+
+- task: CopyFiles@2
+  displayName: 'Copy end to end tests'
+  inputs:
+    sourceFolder: 'src/InvestFunctionApp'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/e2etests'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish end to end test artifact'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/e2etests'
+    artifactName: e2etests
